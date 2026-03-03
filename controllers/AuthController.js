@@ -4,6 +4,9 @@ const User = require("../models/User");
 const sendMailPass = require("../helpers/send_mail");
 const validator = require('validator')
 const saltRounds = 10;
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
+dotenv.config()
 module.exports = {
     async store(req, res) {
         try {
@@ -84,13 +87,18 @@ module.exports = {
             }
             delete user.password;
 
-            //Salvar sessão
-            req.session.user = {
-                id: user.id,
-                name: user.name,
-                email: user.email,
-                username: user.username,
-            };
+            const token = jwt.sign(
+                { userId: user.id },
+                process.env.JWT_SECRET,
+                { expiresIn: "8h" }
+            );
+
+            res.cookie("token", token, {
+                httpOnly: true,
+                secure: process.env.SECURE,
+                sameSite: "lax",
+                maxAge: 3600000
+            });
 
             return Response.success(res, 'Logado com sucesso', user)
         } catch (error) {
