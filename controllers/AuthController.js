@@ -38,7 +38,7 @@ module.exports = {
             // Verifica se ja existe username
             const existsUsername = await User.getBy('username', username);
             if (existsUsername) {
-                return Response.error(res, 'Email já cadastrado')
+                return Response.error(res, 'Nome de usuário já cadastrado')
             }
             //Hash de senha
             const salt = bcrypt.genSaltSync(saltRounds);
