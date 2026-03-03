@@ -1,0 +1,8 @@
+import Response from "../helpers/Response"
+
+module.exports = (req, res, next) => {
+    if (!req.session.user) {
+        return Response.unauthorized(res, 'Usuário não autorizado')
+    }
+    next()
+}
